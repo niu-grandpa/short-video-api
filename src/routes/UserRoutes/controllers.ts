@@ -8,7 +8,7 @@ import { IReq, IReqQuery, IRes } from '../types/types';
  */
 async function getAll(_: IReq, res: IRes) {
   const users = await UserService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ data: users });
+  return res.status(HttpStatusCodes.OK).json(users);
 }
 
 /**
@@ -16,7 +16,7 @@ async function getAll(_: IReq, res: IRes) {
  */
 async function getOne(req: IReqQuery<{}>, res: IRes) {
   const user = await UserService.getOne(req.headers.authorization!);
-  return res.status(HttpStatusCodes.OK).json({ data: user });
+  return res.status(HttpStatusCodes.OK).json(user);
 }
 
 /**
@@ -24,7 +24,7 @@ async function getOne(req: IReqQuery<{}>, res: IRes) {
  */
 async function getRandom(req: IReqQuery<{}>, res: IRes) {
   const user = await UserService.getRandom();
-  return res.status(HttpStatusCodes.OK).json({ data: user });
+  return res.status(HttpStatusCodes.OK).json(user);
 }
 
 /**
@@ -39,10 +39,8 @@ async function update(req: IReq<{ data: IUser }>, res: IRes) {
  * User login.
  */
 async function login(req: IReq<{ data: UserLogin }>, res: IRes) {
-  const { token, ...rest } = req.body.data;
-  // @ts-ignore
-  const uid = await UserService.login(token ?? rest);
-  return res.status(HttpStatusCodes.OK).json({ data: uid });
+  const data = await UserService.login(req.body.data);
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -57,14 +55,15 @@ async function logout(req: IReq, res: IRes) {
  * User profile.
  */
 async function profile(req: IReqQuery<{ uid: string }>, res: IRes) {
-  const f = req.query?.uid ?? req.headers.authorization;
-  const data = await UserService.getProfile(f);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  const { uid } = req.query;
+  const filter = uid ? { uid } : { token: req.headers.authorization };
+  const data = await UserService.getProfile(filter);
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 function sessionExpired(req: IReqQuery<{}>, res: IRes) {
   const flag = UserService.hasSessionExpired(req.headers.authorization!);
-  return res.status(HttpStatusCodes[flag ? 'UNAUTHORIZED' : 'OK']).end();
+  return res.status(HttpStatusCodes[flag ? 'UNAUTHORIZED' : 'OK']).json(flag);
 }
 
 export default {

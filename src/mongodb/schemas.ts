@@ -16,6 +16,7 @@ const User = new mongoose.Schema({
   following: Array,
   followers: Array,
   phoneNumber: String,
+  created_at: Number,
   permissions: {
     no_access: Boolean,
     lock_posts: Boolean,

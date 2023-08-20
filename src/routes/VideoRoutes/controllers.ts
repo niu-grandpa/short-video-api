@@ -12,7 +12,7 @@ async function all(
   res: IRes
 ) {
   const data = await VideoService.getAll(req.query);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -20,7 +20,7 @@ async function all(
  */
 async function one(req: IReqQuery<{ _id: string }>, res: IRes) {
   const data = await VideoService.getOne(req.query._id);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -28,7 +28,7 @@ async function one(req: IReqQuery<{ _id: string }>, res: IRes) {
  */
 async function random(_: IReqQuery<{}>, res: IRes) {
   const data = await VideoService.getRandom();
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**
@@ -36,7 +36,7 @@ async function random(_: IReqQuery<{}>, res: IRes) {
  */
 async function add(req: IReq<{ data: IAddVideo }>, res: IRes) {
   const data = await VideoService.addOne(req.body.data);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 /**

@@ -12,12 +12,12 @@ async function get(
   res: IRes
 ) {
   const data = await CommentsService.getList(req.query);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 async function add(req: IReq<{ data: AddComment }>, res: IRes) {
   const data = await CommentsService.addOne(req.body.data);
-  return res.status(HttpStatusCodes.OK).json({ data });
+  return res.status(HttpStatusCodes.OK).json(data);
 }
 
 async function update(req: IReq<{ data: UpdateComment }>, res: IRes) {

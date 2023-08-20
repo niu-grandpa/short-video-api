@@ -34,20 +34,32 @@ async function getOne(token: string): Promise<IUser> {
   return user;
 }
 
-async function getProfile(uid: string): Promise<Partial<IUser>> {
-  const user = await db.UserModel.findOne({ uid });
+async function getProfile(filter: {
+  uid?: string;
+  token?: string;
+}): Promise<Partial<IUser>> {
+  const user = await db.UserModel.findOne(filter);
+
   if (!user) {
-    throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
+    throw new RouteError(
+      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      'Internal server error when find user profile'
+    );
   }
-  const { token, logged, phoneNumber, ...rest } = user;
-  // @ts-ignore
-  return rest;
+
+  user.uid = '';
+  user.token = '';
+  user.phoneNumber = '';
+  user.created_at = -1;
+  user.logged = null as unknown as boolean;
+
+  return user as IUser;
 }
 
 async function addOne(data: AddUser): Promise<object> {
   const res = await db.UserModel.findOne({ phoneNumber: data.phoneNumber });
   if (res) {
-    throw new RouteError(HttpStatusCodes.OK, 'User already exists');
+    throw new RouteError(HttpStatusCodes.BAD_REQUEST, 'User already exists');
   }
   try {
     const newUser = User.new(data);
@@ -91,9 +103,6 @@ function hasSessionExpired(token: string): boolean {
 }
 
 async function login({ token, ...rest }: UserLogin): Promise<string | object> {
-  // 如果用户存在则登录后返回token，否则新建用户并返回 {uid,token}
-  let returnVal: string | object = '';
-
   const update = { $set: { logged: true } };
 
   if (token) {
@@ -104,16 +113,17 @@ async function login({ token, ...rest }: UserLogin): Promise<string | object> {
       );
     }
     await db.UserModel.findOneAndUpdate({ token }, update);
-    returnVal = token;
+    return token;
   } else if (rest) {
-    try {
-      await db.UserModel.findOneAndUpdate(rest, update);
-    } catch (error) {
-      // 不存在则创建新用户
-      returnVal = await addOne(rest);
+    if (!(await db.UserModel.findOne(rest))) {
+      return await addOne(rest);
+    } else {
+      await db.UserModel.updateOne(rest, { $set: { logged: true } });
+      return User.setUserToken(rest);
     }
   }
-  return returnVal;
+
+  return '';
 }
 
 async function logout(token: string): Promise<void> {

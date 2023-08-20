@@ -30,7 +30,9 @@ async function getList(opts: GetComments): Promise<IComment[]> {
 
 async function addOne(data: AddComment): Promise<IComment> {
   try {
-    const { avatar, nickname } = await UserService.getProfile(data.uid);
+    const { avatar, nickname } = await UserService.getProfile({
+      uid: data.uid,
+    });
     const newData = Comments.new({
       ...data,
       avatar: avatar!,

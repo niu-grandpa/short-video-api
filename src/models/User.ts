@@ -27,6 +27,7 @@ export interface IUser {
   avatar: string;
   gender: UserGender;
   user_sign: string;
+  created_at: number;
   permissions: {
     no_access: boolean;
     lock_posts: boolean;
@@ -62,6 +63,7 @@ function new_({ phoneNumber, code }: AddUser): IUser {
     phoneNumber,
     avatar: '',
     user_sign: '',
+    created_at: Date.now(),
     nickname: `用户_${timestamp}`,
     permissions: {
       no_access: false,
