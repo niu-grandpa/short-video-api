@@ -4,6 +4,7 @@
 
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -26,6 +27,27 @@ import Paths from './routes/constants/Paths';
 // **** Variables **** //
 
 const app = express();
+
+// **** AllowOrigin **** //
+
+// 允许跨域请求的url
+const allowedOrigins = ['http://localhost:3000'];
+
+// 配置 cors 中间件
+app.use(
+  cors({
+    credentials: true,
+    methods: 'PUT,POST,GET,DELETE,OPTIONS'.split(','),
+    allowedHeaders: 'Content-Type,Authorization,X-Requested-With'.split(','),
+    origin: function (origin, callback) {
+      if (origin && allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Not allowed by CORS: ${origin}`));
+      }
+    },
+  })
+);
 
 // **** Setup **** //
 
