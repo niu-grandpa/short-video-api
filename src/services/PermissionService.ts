@@ -1,7 +1,7 @@
 import { IPUser, IPVideo } from '@src/models/Permission';
 import db from '@src/mongodb';
 
-async function setUser({ token, permissions }: IPUser): Promise<void> {
+async function setUser({ token, ...permissions }: IPUser): Promise<void> {
   await db.UserModel.updateOne({ token }, { $set: { permissions } });
 }
 

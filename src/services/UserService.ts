@@ -28,7 +28,7 @@ async function getRandom(): Promise<IUser[]> {
 async function getOne(token: string): Promise<IUser> {
   const user = await db.UserModel.findOne({ token });
   if (!user) {
-    throw new RouteError(HttpStatusCodes.NOT_FOUND, 'User not found');
+    throw new RouteError(HttpStatusCodes.BAD_GATEWAY, 'User not found');
   }
   // @ts-ignore
   return user;
@@ -42,7 +42,7 @@ async function getProfile(filter: {
 
   if (!user) {
     throw new RouteError(
-      HttpStatusCodes.INTERNAL_SERVER_ERROR,
+      HttpStatusCodes.BAD_REQUEST,
       'Internal server error when find user profile'
     );
   }
@@ -115,11 +115,14 @@ async function login({ token, ...rest }: UserLogin): Promise<string | object> {
     await db.UserModel.findOneAndUpdate({ token }, update);
     return token;
   } else if (rest) {
-    if (!(await db.UserModel.findOne(rest))) {
+    if (!(await db.UserModel.findOne({ phoneNumber: rest.phoneNumber }))) {
       return await addOne(rest);
     } else {
-      await db.UserModel.updateOne(rest, { $set: { logged: true } });
-      return User.setUserToken(rest);
+      const newToken = User.setUserToken(rest);
+      await db.UserModel.updateOne(rest, {
+        $set: { logged: true, token: newToken },
+      });
+      return newToken;
     }
   }
 

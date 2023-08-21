@@ -7,7 +7,10 @@ import { IReq, IRes } from '../types/types';
  * 用户个人权限设置
  */
 async function setUser(req: IReq<{ data: IPUser }>, res: IRes) {
-  await PermissionService.setUser(req.body.data);
+  await PermissionService.setUser({
+    ...req.body.data,
+    token: req.headers.authorization!,
+  });
   return res.status(HttpStatusCodes.OK).end();
 }
 
