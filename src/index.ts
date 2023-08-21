@@ -2,8 +2,10 @@ import logger from 'jet-logger';
 import './pre-start'; // Must be the first import
 
 import EnvVars from '@src/constants/EnvVars';
-import '@src/mongodb';
 import server from './server';
+
+import '@src/mongodb';
+import '@src/mongodb/preset';
 
 // **** Run **** //
 
