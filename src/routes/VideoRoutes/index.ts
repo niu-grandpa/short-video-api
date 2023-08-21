@@ -4,7 +4,6 @@ import Controllers from './controllers';
 
 const videoRouter = Router();
 
-videoRouter.get(Paths.Videos.Get, Controllers.all);
 videoRouter.get(Paths.Videos.One, Controllers.one);
 videoRouter.get(Paths.Videos.Upload, Controllers.add);
 videoRouter.get(Paths.Videos.Random, Controllers.random);

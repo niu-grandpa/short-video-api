@@ -6,8 +6,8 @@ export interface IVideo {
   uid: string;
   avatar: string;
   author: string;
-  likes: number[];
-  favorites: number[];
+  likes: string[];
+  favorites: string[];
   created_at: number;
   permissions: {
     publicity: boolean;

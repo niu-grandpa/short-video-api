@@ -1,19 +1,7 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IAddVideo } from '@src/models/Video';
 import VideoService from '@src/services/VideoService';
-import { GenericPagination, IReq, IReqQuery, IRes } from '../types/types';
-
-/**
- * 获取全部视频 - 分页
- */
-async function all(
-  // @ts-ignore
-  req: IReqQuery<GenericPagination>,
-  res: IRes
-) {
-  const data = await VideoService.getAll(req.query);
-  return res.status(HttpStatusCodes.OK).json(data);
-}
+import { IReq, IReqQuery, IRes } from '../types/types';
 
 /**
  * 获取1个视频
@@ -24,10 +12,10 @@ async function one(req: IReqQuery<{ _id: string }>, res: IRes) {
 }
 
 /**
- * 随机获取1个视频
+ * 随机获取视频
  */
-async function random(_: IReqQuery<{}>, res: IRes) {
-  const data = await VideoService.getRandom();
+async function random(req: IReqQuery<{ size: string }>, res: IRes) {
+  const data = await VideoService.getRandom(Number(req.query.size));
   return res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -48,7 +36,6 @@ async function remove(req: IReqQuery<{ _id: string }>, res: IRes) {
 }
 
 export default {
-  all,
   one,
   add,
   random,
