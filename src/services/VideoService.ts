@@ -4,8 +4,8 @@ import db from '@src/mongodb';
 import { RouteError } from '@src/other/classes';
 import { VIDEO_NOT_FOUND_ERR } from './ActionService';
 
-async function getOne(_id: string): Promise<IVideo> {
-  const res = await db.VideoModel.findOne({ _id });
+async function getOne(vid: string): Promise<IVideo> {
+  const res = await db.VideoModel.findOne({ vid });
   if (!res) {
     throw new RouteError(HttpStatusCodes.NOT_FOUND, VIDEO_NOT_FOUND_ERR);
   }
@@ -35,9 +35,9 @@ async function addOne(data: IAddVideo): Promise<IVideo> {
   }
 }
 
-async function removeOne(_id: string): Promise<void> {
+async function removeOne(vid: string): Promise<void> {
   try {
-    await db.VideoModel.findOneAndRemove({ _id });
+    await db.VideoModel.findOneAndRemove({ vid });
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,

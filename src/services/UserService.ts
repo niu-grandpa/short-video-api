@@ -38,7 +38,7 @@ async function getProfile(filter: {
   uid?: string;
   token?: string;
 }): Promise<Partial<IUser>> {
-  const user = await db.UserModel.findOne(filter);
+  const user = await db.UserModel.findOne(filter, { _id: 0 });
 
   if (!user) {
     throw new RouteError(

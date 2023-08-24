@@ -5,8 +5,8 @@ async function setUser({ token, ...permissions }: IPUser): Promise<void> {
   await db.UserModel.updateOne({ token }, { $set: { permissions } });
 }
 
-async function setVideo({ _id, uid, permissions }: IPVideo) {
-  await db.VideoModel.updateOne({ _id, uid }, { $set: { permissions } });
+async function setVideo({ vid, uid, permissions }: IPVideo) {
+  await db.VideoModel.updateOne({ vid, uid }, { $set: { permissions } });
 }
 
 export default {

@@ -25,8 +25,8 @@ async function update(req: IReq<{ data: UpdateComment }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
-async function remove(req: IReqQuery<{ _id: string }>, res: IRes) {
-  await CommentsService.removeOne(req.query._id);
+async function remove(req: IReqQuery<{ cid: string }>, res: IRes) {
+  await CommentsService.removeOne(req.query.cid);
   return res.status(HttpStatusCodes.OK).end();
 }
 

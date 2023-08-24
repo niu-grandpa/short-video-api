@@ -1,4 +1,5 @@
 import { GenericPagination } from '@src/routes/types/types';
+import genera from './genera';
 
 export const enum CommentLevel {
   ONE,
@@ -6,12 +7,14 @@ export const enum CommentLevel {
 }
 
 export interface IComment {
-  _id?: string;
+  cid: string;
   uid: string;
   avatar: string;
   author: string;
   belong: string;
+  replies: number;
   likes: number[];
+  dislikes: number[];
   content: string;
   level: CommentLevel;
   created_at: number;
@@ -26,13 +29,13 @@ export interface AddComment {
 }
 
 export interface UpdateComment {
-  _id: string;
+  cid: string;
   content: string;
 }
 
 export interface LikeComment {
   uid: string;
-  _id: string;
+  cid: string;
   flag: boolean;
 }
 
@@ -46,10 +49,13 @@ export interface GetComments extends GenericPagination {
  */
 function new_(data: AddComment & { author: string; avatar: string }): IComment {
   return {
+    cid: genera.createId(),
     ...data,
     author: '',
     avatar: '',
+    replies: 0,
     likes: [],
+    dislikes: [],
     updated_at: 0,
     created_at: Date.now(),
   };

@@ -1,10 +1,11 @@
+import genera from './genera';
+
 export interface IVideo {
-  _id?: string;
+  vid: string;
   url: string;
   title: string;
   watched: number;
   uid: string;
-  avatar: string;
   author: string;
   likes: string[];
   favorites: string[];
@@ -29,8 +30,8 @@ export interface IAddVideo {
 function new_(data: IAddVideo): IVideo {
   return {
     ...data,
+    vid: genera.createId(),
     author: '',
-    avatar: '',
     watched: 0,
     likes: [],
     favorites: [],

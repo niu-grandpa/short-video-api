@@ -43,11 +43,11 @@ async function setFollowers(
 }
 
 // 收藏视频
-async function setFavorites({ _id, flag, uid }: IFavorites) {
+async function setFavorites({ vid, flag, uid }: IFavorites) {
   try {
     const key = flag ? '$addToSet' : '$pull';
-    await db.UserModel.updateOne({ uid }, { [key]: { favorites: { _id } } });
-    await db.VideoModel.updateOne({ _id }, { [key]: { favorites: { uid } } });
+    await db.UserModel.updateOne({ uid }, { [key]: { favorites: { vid } } });
+    await db.VideoModel.updateOne({ vid }, { [key]: { favorites: { uid } } });
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -57,10 +57,10 @@ async function setFavorites({ _id, flag, uid }: IFavorites) {
 }
 
 // 点赞视频
-async function setLikeVideo({ _id, flag, uid }: IFavorites) {
+async function setLikeVideo({ vid, flag, uid }: IFavorites) {
   try {
     await db.VideoModel.updateOne(
-      { _id },
+      { vid },
       { [flag ? '$addToSet' : '$pull']: { likes: { uid } } }
     );
   } catch (error) {
@@ -72,11 +72,9 @@ async function setLikeVideo({ _id, flag, uid }: IFavorites) {
 }
 
 // 添加视频浏览量
-async function addVideoWatched(_id: string) {
+async function addVideoWatched(vid: string) {
   try {
-    // @ts-ignore
-    const { watched } = await db.VideoModel.findOne({ _id });
-    await db.VideoModel.updateOne({ _id }, { $set: { watched: watched + 1 } });
+    await db.VideoModel.findOneAndUpdate({ vid }, { $inc: { watched: 1 } });
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -86,10 +84,10 @@ async function addVideoWatched(_id: string) {
 }
 
 // 评论点赞&点踩
-async function setLikeComment({ uid, _id, flag }: LikeComment) {
+async function setLikeComment({ uid, cid, flag }: LikeComment) {
   try {
     await db.CommentModel.findOneAndUpdate(
-      { _id },
+      { cid },
       { [flag ? '$addToSet' : '$pull']: { likes: { uid } } }
     );
   } catch (error) {

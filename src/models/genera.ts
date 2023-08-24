@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { IUser } from './User';
 
 /**
@@ -27,7 +27,12 @@ function updateOnceAuthorInfo(
 
 function validate() {}
 
+function createId() {
+  return new mongoose.Types.ObjectId().toString();
+}
+
 export default {
   validate,
+  createId,
   updateOnceAuthorInfo,
 } as const;

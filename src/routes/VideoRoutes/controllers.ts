@@ -6,8 +6,8 @@ import { IReq, IReqQuery, IRes } from '../types/types';
 /**
  * 获取1个视频
  */
-async function one(req: IReqQuery<{ _id: string }>, res: IRes) {
-  const data = await VideoService.getOne(req.query._id);
+async function one(req: IReqQuery<{ vid: string }>, res: IRes) {
+  const data = await VideoService.getOne(req.query.vid);
   return res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -30,8 +30,8 @@ async function add(req: IReq<{ data: IAddVideo }>, res: IRes) {
 /**
  * 删除视频
  */
-async function remove(req: IReqQuery<{ _id: string }>, res: IRes) {
-  await VideoService.removeOne(req.query._id);
+async function remove(req: IReqQuery<{ vid: string }>, res: IRes) {
+  await VideoService.removeOne(req.query.vid);
   return res.status(HttpStatusCodes.OK).end();
 }
 

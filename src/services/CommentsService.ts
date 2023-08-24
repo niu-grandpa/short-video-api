@@ -1,6 +1,7 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import Comments, {
   AddComment,
+  CommentLevel,
   GetComments,
   IComment,
   UpdateComment,
@@ -14,12 +15,20 @@ async function getList(opts: GetComments): Promise<IComment[]> {
   const syncInfo = genera.updateOnceAuthorInfo(1);
   try {
     await syncInfo(UserService.getAll, db.CommentModel);
+
     const { belong, page, size, sort, level } = opts;
-    // @ts-ignore
-    return await db.CommentModel.find({ belong, level })
+
+    const list = await db.CommentModel.find({ belong, level })
       .sort({ create_at: sort ?? 1 })
       .skip(page * size)
       .limit(size);
+
+    if (Number(level) === CommentLevel.TOW) {
+      const father = await db.CommentModel.findOne({ cid: belong });
+      list.push(father!);
+    }
+
+    return list as IComment[];
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -33,12 +42,23 @@ async function addOne(data: AddComment): Promise<IComment> {
     const { avatar, nickname } = await UserService.getProfile({
       uid: data.uid,
     });
+
     const newData = Comments.new({
       ...data,
       avatar: avatar!,
       author: nickname!,
     });
+
     await new db.CommentModel(newData).save();
+
+    // 父评论回复数+1
+    if (data.level === CommentLevel.TOW) {
+      await db.CommentModel.updateOne(
+        { cid: data.belong },
+        { $inc: { replies: 1 } }
+      );
+    }
+
     return newData;
   } catch (error) {
     throw new RouteError(
@@ -59,10 +79,10 @@ async function removeOne(_id: string): Promise<void> {
   }
 }
 
-async function updateOne({ _id, content }: UpdateComment): Promise<void> {
+async function updateOne({ cid, content }: UpdateComment): Promise<void> {
   try {
     await db.CommentModel.findOneAndUpdate(
-      { _id },
+      { cid },
       { $set: { content, updated_at: Date.now() } }
     );
   } catch (error) {

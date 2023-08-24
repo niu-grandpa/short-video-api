@@ -25,13 +25,12 @@ const User = new mongoose.Schema({
 });
 
 const Video = new mongoose.Schema({
-  _id: String,
+  vid: String,
   url: String,
   title: String,
   watched: Number,
   uid: String,
   likes: Array,
-  avatar: String,
   author: String,
   favorites: Array,
   created_at: Number,
@@ -43,12 +42,16 @@ const Video = new mongoose.Schema({
 });
 
 const Comment = new mongoose.Schema({
-  _id: String,
+  cid: String,
   uid: String,
   level: Number,
+  at_first: Boolean,
+  avatar: String,
+  author: String,
   belong: String,
-  likes: Number,
-  dislikes: Number,
+  replies: Number,
+  likes: Array,
+  dislikes: Array,
   content: String,
   created_at: Number,
   updated_at: Number,

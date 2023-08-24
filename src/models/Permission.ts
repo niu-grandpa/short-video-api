@@ -7,7 +7,7 @@ export interface IPUser {
 }
 
 export interface IPVideo {
-  _id: string;
+  vid: string;
   uid: string;
   permissions: IVideo['permissions'];
 }
