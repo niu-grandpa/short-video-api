@@ -12,7 +12,7 @@ async function setFollowing({ uid, someone, flag }: IFollowing): Promise<void> {
   try {
     await db.UserModel.updateOne(
       { uid },
-      { [flag ? '$addToSet' : '$pull']: { following: { someone } } }
+      { [flag ? '$addToSet' : '$pull']: { following: someone } }
     );
     await setFollowers(someone, uid, flag);
   } catch (error) {
@@ -32,7 +32,7 @@ async function setFollowers(
   try {
     await db.UserModel.updateOne(
       { uid },
-      { [flag ? '$addToSet' : '$pull']: { followers: { someone } } }
+      { [flag ? '$addToSet' : '$pull']: { followers: someone } }
     );
   } catch (error) {
     throw new RouteError(
@@ -46,8 +46,8 @@ async function setFollowers(
 async function setFavorites({ vid, flag, uid }: IFavorites) {
   try {
     const key = flag ? '$addToSet' : '$pull';
-    await db.UserModel.updateOne({ uid }, { [key]: { favorites: { vid } } });
-    await db.VideoModel.updateOne({ vid }, { [key]: { favorites: { uid } } });
+    await db.UserModel.updateOne({ uid }, { [key]: { favorites: vid } });
+    await db.VideoModel.updateOne({ vid }, { [key]: { favorites: uid } });
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -61,7 +61,7 @@ async function setLikeVideo({ vid, flag, uid }: IFavorites) {
   try {
     await db.VideoModel.updateOne(
       { vid },
-      { [flag ? '$addToSet' : '$pull']: { likes: { uid } } }
+      { [flag ? '$addToSet' : '$pull']: { likes: uid } }
     );
   } catch (error) {
     throw new RouteError(
@@ -87,12 +87,12 @@ async function addVideoWatched(vid: string) {
 async function setLikeComment({ uid, cid, flag, reset }: LikeComment) {
   const update =
     flag && reset === false
-      ? { $addToSet: { likes: { uid } }, $pull: { dislikes: { uid } } }
+      ? { $addToSet: { likes: uid }, $pull: { dislikes: uid } }
       : !flag && reset === false
-      ? { $pull: { likes: { uid } }, $addToSet: { dislikes: { uid } } }
+      ? { $pull: { likes: uid }, $addToSet: { dislikes: uid } }
       : flag && reset
       ? { $pull: { like: { uid } } }
-      : { $pull: { dislikes: { uid } } };
+      : { $pull: { dislikes: uid } };
 
   try {
     await db.CommentModel.updateOne({ cid }, update);

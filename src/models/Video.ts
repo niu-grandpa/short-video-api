@@ -9,6 +9,7 @@ export interface IVideo {
   author: string;
   likes: string[];
   favorites: string[];
+  comments: number;
   created_at: number;
   permissions: {
     publicity: boolean;
@@ -33,6 +34,7 @@ function new_(data: IAddVideo): IVideo {
     vid: genera.createId(),
     author: '',
     watched: 0,
+    comments: 0,
     likes: [],
     favorites: [],
     permissions: {
