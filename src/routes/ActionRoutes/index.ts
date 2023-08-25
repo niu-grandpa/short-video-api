@@ -8,5 +8,6 @@ actionRouter.put(Paths.Actions.Following, Controllers.following);
 actionRouter.put(Paths.Actions.Favorites, Controllers.favorites);
 actionRouter.put(Paths.Actions.LikeVideo, Controllers.likeVideo);
 actionRouter.put(Paths.Actions.VideoWatched, Controllers.videoWatched);
+actionRouter.put(Paths.Actions.LikeComment, Controllers.likeComment);
 
 export default actionRouter;

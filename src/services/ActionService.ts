@@ -74,7 +74,7 @@ async function setLikeVideo({ vid, flag, uid }: IFavorites) {
 // 添加视频浏览量
 async function addVideoWatched(vid: string) {
   try {
-    await db.VideoModel.findOneAndUpdate({ vid }, { $inc: { watched: 1 } });
+    await db.VideoModel.updateOne({ vid }, { $inc: { watched: 1 } });
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -84,12 +84,18 @@ async function addVideoWatched(vid: string) {
 }
 
 // 评论点赞&点踩
-async function setLikeComment({ uid, cid, flag }: LikeComment) {
+async function setLikeComment({ uid, cid, flag, reset }: LikeComment) {
+  const update =
+    flag && reset === false
+      ? { $addToSet: { likes: { uid } }, $pull: { dislikes: { uid } } }
+      : !flag && reset === false
+      ? { $pull: { likes: { uid } }, $addToSet: { dislikes: { uid } } }
+      : flag && reset
+      ? { $pull: { like: { uid } } }
+      : { $pull: { dislikes: { uid } } };
+
   try {
-    await db.CommentModel.findOneAndUpdate(
-      { cid },
-      { [flag ? '$addToSet' : '$pull']: { likes: { uid } } }
-    );
+    await db.CommentModel.updateOne({ cid }, update);
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,

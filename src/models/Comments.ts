@@ -37,6 +37,7 @@ export interface LikeComment {
   uid: string;
   cid: string;
   flag: boolean;
+  reset?: boolean;
 }
 
 export interface GetComments extends GenericPagination {

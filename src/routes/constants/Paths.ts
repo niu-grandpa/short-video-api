@@ -33,6 +33,7 @@ const Paths = {
     Following: '/set-following',
     Favorites: '/set-favorites',
     LikeVideo: '/like-video',
+    LikeComment: '/like-comment',
     VideoWatched: '/video-watched',
   },
 

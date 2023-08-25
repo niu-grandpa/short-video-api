@@ -1,5 +1,6 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IFavorites, IFollowing } from '@src/models/Action';
+import { LikeComment } from '@src/models/Comments';
 import ActionService from '@src/services/ActionService';
 import { IReq, IRes } from '../types/types';
 
@@ -35,9 +36,18 @@ async function videoWatched(req: IReq<{ data: { _id: string } }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).end();
 }
 
+/**
+ * 点赞评论
+ */
+async function likeComment(req: IReq<{ data: LikeComment }>, res: IRes) {
+  await ActionService.setLikeComment(req.body.data);
+  return res.status(HttpStatusCodes.OK).end();
+}
+
 export default {
   following,
   favorites,
   likeVideo,
   videoWatched,
+  likeComment,
 } as const;
