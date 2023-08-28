@@ -1,6 +1,10 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { CommentLevel } from '@src/models/Comments';
-import Video, { IAddVideo, IVideo } from '@src/models/Video';
+import Video, {
+  GetManyOfVideoByUid,
+  IAddVideo,
+  IVideo,
+} from '@src/models/Video';
 import db from '@src/mongodb';
 import { RouteError } from '@src/other/classes';
 import { VIDEO_NOT_FOUND_ERR } from './ActionService';
@@ -29,6 +33,23 @@ async function getOne(vid: string): Promise<IVideo> {
   res.comments = await getNumOfComments(vid);
   // @ts-ignore
   return res;
+}
+
+async function getManyOfByUid(opts: GetManyOfVideoByUid): Promise<IVideo[]> {
+  const { uid: list, page, size, sort } = opts;
+  const arr: IVideo[] = [];
+
+  arr.length = 0;
+
+  for (const uid of JSON.parse(list as unknown as string)) {
+    const res = await db.VideoModel.find({ uid })
+      .sort({ create_at: sort ?? 1 })
+      .skip(page * size)
+      .limit(Number(size));
+    arr.concat(res as IVideo[]);
+  }
+
+  return arr;
 }
 
 async function getRandom(size = 1): Promise<IVideo[]> {
@@ -72,4 +93,5 @@ export default {
   getRandom,
   addOne,
   removeOne,
+  getManyOfByUid,
 } as const;

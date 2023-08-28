@@ -1,3 +1,4 @@
+import { GenericPagination } from '@src/routes/types/types';
 import genera from './genera';
 
 export interface IVideo {
@@ -23,6 +24,10 @@ export interface IAddVideo {
   title: string;
   name: string;
   uid: string;
+}
+
+export interface GetManyOfVideoByUid extends GenericPagination {
+  uid: string[];
 }
 
 /**

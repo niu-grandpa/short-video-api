@@ -1,5 +1,5 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import { IAddVideo } from '@src/models/Video';
+import { GetManyOfVideoByUid, IAddVideo } from '@src/models/Video';
 import VideoService from '@src/services/VideoService';
 import { IReq, IReqQuery, IRes } from '../types/types';
 
@@ -8,6 +8,15 @@ import { IReq, IReqQuery, IRes } from '../types/types';
  */
 async function one(req: IReqQuery<{ vid: string }>, res: IRes) {
   const data = await VideoService.getOne(req.query.vid);
+  return res.status(HttpStatusCodes.OK).json(data);
+}
+
+/**
+ * 获取好友的视频
+ */
+// @ts-ignore
+async function byUid(req: IReqQuery<GetManyOfVideoByUid>, res: IRes) {
+  const data = await VideoService.getManyOfByUid(req.query);
   return res.status(HttpStatusCodes.OK).json(data);
 }
 
@@ -40,4 +49,5 @@ export default {
   add,
   random,
   remove,
+  byUid,
 } as const;

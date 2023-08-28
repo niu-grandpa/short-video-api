@@ -22,6 +22,7 @@ const Paths = {
   Videos: {
     Base: '/videos',
     One: '/one',
+    ByUid: '/get-by-uid',
     Upload: '/upload',
     Random: '/random',
     Remove: '/delete',
