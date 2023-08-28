@@ -84,7 +84,7 @@ function isTokenExpired(token: string) {
     const isExpired = Date.now() >= (decoded as JwtPayload).exp! * 1000;
     return isExpired;
   } catch (error) {
-    throw 'Invalid token';
+    return true;
   }
 }
 
