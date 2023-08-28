@@ -103,8 +103,6 @@ function hasSessionExpired(token: string): boolean {
 }
 
 async function login({ token, ...rest }: UserLogin): Promise<string | object> {
-  const update = { $set: { logged: true } };
-
   if (token) {
     if (hasSessionExpired(token)) {
       throw new RouteError(
@@ -112,7 +110,9 @@ async function login({ token, ...rest }: UserLogin): Promise<string | object> {
         'User login has expired'
       );
     }
-    await db.UserModel.findOneAndUpdate({ token }, update);
+    const user = await db.UserModel.findOne({ token });
+    if (user?.logged) return user.token!;
+    await db.UserModel.updateOne({ token }, { logged: true });
     return token;
   } else if (rest) {
     if (!(await db.UserModel.findOne({ phoneNumber: rest.phoneNumber }))) {
