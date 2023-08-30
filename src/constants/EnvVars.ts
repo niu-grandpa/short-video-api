@@ -25,7 +25,7 @@ export default {
     Exp: process.env.COOKIE_EXP ?? '', // exp at the same time as the cookie
   },
   DB: {
-    Host: process.env.DB_URI ?? '',
+    Uri: process.env.DB_URI ?? '',
     Database: process.env.DB_DATABASE ?? '',
   },
 } as const;

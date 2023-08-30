@@ -1,11 +1,10 @@
-import mongoose from 'mongoose';
-
 import EnvVars from '@src/constants/EnvVars';
+
+import mongoose from 'mongoose';
 import Schemas from './schemas';
 
 // 连接数据库
-
-mongoose.connect(EnvVars.DB.Host + EnvVars.DB.Database);
+mongoose.connect(`${EnvVars.DB.Uri}/${EnvVars.DB.Database}`);
 
 const db = mongoose.connection;
 

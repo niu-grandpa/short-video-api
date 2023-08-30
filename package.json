@@ -4,7 +4,8 @@
   "scripts": {
     "build": "npx ts-node build.ts",
     "start": "node -r module-alias/register ./dist --env=production",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "server": "nodemon  --env=production"
   },
   "nodemonConfig": {
     "watch": [
