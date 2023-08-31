@@ -8,7 +8,7 @@ import path from 'path';
 
 async function presetData() {
   try {
-    await Promise.all([mockUserData(), mockVideoData(), mockCommentData()]);
+    await Promise.all([mockUserData(), mockVideoData() /*mockCommentData()*/]);
   } catch (error) {
     console.log('载入预置数据失败: ', error);
   }
@@ -25,7 +25,7 @@ async function mockUserData() {
     data.forEach(item => {
       item.token = User.setUserToken({
         phoneNumber: item.phoneNumber,
-        code: '123456',
+        code: ~~(Math.random() * 1000000).toString(),
       });
       return item;
     });
