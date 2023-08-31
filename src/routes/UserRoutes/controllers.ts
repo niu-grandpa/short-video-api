@@ -23,7 +23,7 @@ async function getOne(req: IReqQuery<{}>, res: IRes) {
  * Get random user.
  */
 async function getRandom(req: IReqQuery<{}>, res: IRes) {
-  const user = await UserService.getRandom();
+  const user = await UserService.getRandom(req.headers.authorization ?? '');
   return res.status(HttpStatusCodes.OK).json(user);
 }
 

@@ -14,9 +14,21 @@ async function getAll(): Promise<IUser[]> {
   }
 }
 
-async function getRandom(): Promise<IUser[]> {
+async function getRandom(token: string): Promise<IUser[]> {
   try {
-    return await db.UserModel.aggregate([{ $sample: { size: 4 } }]);
+    const recommend: IUser[] = [];
+    const user: IUser | null = await db.UserModel.findOne({ token });
+
+    while (recommend.length < 4) {
+      const [res]: IUser[] = await db.UserModel.aggregate([
+        { $sample: { size: 1 } },
+      ]);
+      if (!user?.following.includes(res.uid)) {
+        recommend.push(res);
+      }
+    }
+
+    return recommend;
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
