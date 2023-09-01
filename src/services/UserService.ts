@@ -16,15 +16,17 @@ async function getAll(): Promise<IUser[]> {
 
 async function getRandom(token: string): Promise<IUser[]> {
   try {
-    const recommend: IUser[] = [];
+    const recommend = Array<IUser>(2);
     const user: IUser | null = await db.UserModel.findOne({ token });
+    let i = 0;
 
-    while (recommend.length < 4) {
+    // 不推荐已关注的用户
+    while (recommend.length < 2) {
       const [res]: IUser[] = await db.UserModel.aggregate([
         { $sample: { size: 1 } },
       ]);
       if (!user?.following.includes(res.uid)) {
-        recommend.push(res);
+        recommend[i++] = res;
       }
     }
 
