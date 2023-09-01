@@ -16,17 +16,21 @@ async function getAll(): Promise<IUser[]> {
 
 async function getRandom(token: string): Promise<IUser[]> {
   try {
-    const recommend = Array<IUser>(2);
+    const recommend: IUser[] = [];
     const user: IUser | null = await db.UserModel.findOne({ token });
-    let i = 0;
 
     // 不推荐已关注的用户
     while (recommend.length < 2) {
+      const r1 = recommend[0];
       const [res]: IUser[] = await db.UserModel.aggregate([
         { $sample: { size: 1 } },
       ]);
-      if (!user?.following.includes(res.uid)) {
-        recommend[i++] = res;
+      if (
+        r1?.uid !== res.uid &&
+        user?.uid !== res.uid &&
+        !user?.following.includes(res.uid)
+      ) {
+        recommend.push(res);
       }
     }
 
@@ -70,17 +74,13 @@ async function getProfile(filter: {
   return user as IUser;
 }
 
-async function addOne(data: AddUser): Promise<object> {
-  const res = await db.UserModel.findOne({ phoneNumber: data.phoneNumber });
-  if (res) {
-    throw new RouteError(HttpStatusCodes.BAD_REQUEST, 'User already exists');
-  }
+async function addOne(data: AddUser): Promise<string> {
   try {
     const newUser = User.new(data);
     await new db.UserModel({
       ...newUser,
     }).save();
-    return { uid: newUser.uid, token: newUser.token };
+    return newUser.token;
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
@@ -116,7 +116,7 @@ function hasSessionExpired(token: string): boolean {
   return User.isTokenExpired(token);
 }
 
-async function login({ token, ...rest }: UserLogin): Promise<string | object> {
+async function login({ token, ...rest }: UserLogin): Promise<string> {
   if (token) {
     if (hasSessionExpired(token)) {
       throw new RouteError(
@@ -124,22 +124,23 @@ async function login({ token, ...rest }: UserLogin): Promise<string | object> {
         'User login has expired'
       );
     }
-    const user = await db.UserModel.findOne({ token });
-    if (user?.logged) return user.token!;
-    await db.UserModel.updateOne({ token }, { logged: true });
+    await db.UserModel.updateOne({ token }, { $set: { logged: true } });
     return token;
   } else if (rest) {
-    if (!(await db.UserModel.findOne({ phoneNumber: rest.phoneNumber }))) {
-      return await addOne(rest);
-    } else {
+    const { phoneNumber } = rest;
+    const user = await db.UserModel.findOne({ phoneNumber });
+    if (user) {
+      // 使用手机号登录每次都刷新token
       const newToken = User.setUserToken(rest);
-      await db.UserModel.updateOne(rest, {
-        $set: { logged: true, token: newToken },
-      });
+      await db.UserModel.updateOne(
+        { phoneNumber },
+        { $set: { logged: true, token: newToken } }
+      );
       return newToken;
+    } else {
+      return await addOne(rest);
     }
   }
-
   return '';
 }
 
