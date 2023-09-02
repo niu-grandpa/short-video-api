@@ -31,14 +31,14 @@ const app = express();
 // **** AllowOrigin **** //
 
 // 允许跨域请求的url
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3000', 'http://192.168.137.1:3000'];
 
 // 配置 cors 中间件
 app.use(
   cors({
     credentials: true,
-    methods: 'PUT,POST,GET,DELETE,OPTIONS'.split(','),
-    allowedHeaders: 'Content-Type,Authorization,X-Requested-With'.split(','),
+    methods: 'PUT,POST,GET,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization,X-Requested-With',
     origin: function (origin, callback) {
       if (origin && allowedOrigins.includes(origin)) {
         callback(null, true);
