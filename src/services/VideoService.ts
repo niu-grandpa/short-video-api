@@ -28,7 +28,7 @@ async function getNumOfComments(vid: string): Promise<number> {
 async function getOne(vid: string): Promise<IVideo> {
   const res = await db.VideoModel.findOne({ vid });
   if (!res) {
-    throw new RouteError(HttpStatusCodes.NOT_FOUND, VIDEO_NOT_FOUND_ERR);
+    throw new RouteError(HttpStatusCodes.BAD_REQUEST, VIDEO_NOT_FOUND_ERR);
   }
   res.comments = await getNumOfComments(vid);
   // @ts-ignore
@@ -55,9 +55,6 @@ async function getManyOfByUid(opts: GetManyOfVideoByUid): Promise<IVideo[]> {
 async function getRandom(size = 1): Promise<IVideo[]> {
   // 使用聚合管道的 $sample 阶段获取一个随机文档，并以数组的形式返回结果
   const res: IVideo[] = await db.VideoModel.aggregate([{ $sample: { size } }]);
-  if (!res.length) {
-    throw new RouteError(HttpStatusCodes.NOT_FOUND, VIDEO_NOT_FOUND_ERR);
-  }
   for (const item of res) {
     item.comments = await getNumOfComments(item.vid);
   }
