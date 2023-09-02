@@ -7,24 +7,24 @@ import { IReq, IReqQuery, IRes } from '../types/types';
  * Get all users.
  */
 async function getAll(_: IReq, res: IRes) {
-  const users = await UserService.getAll();
-  return res.status(HttpStatusCodes.OK).json(users);
+  const data = await UserService.getAll();
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
  * Get one user.
  */
 async function getOne(req: IReqQuery<{}>, res: IRes) {
-  const user = await UserService.getOne(req.headers.authorization!);
-  return res.status(HttpStatusCodes.OK).json(user);
+  const data = await UserService.getOne(req.headers.authorization!);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
  * Get random user.
  */
 async function getRandom(req: IReqQuery<{}>, res: IRes) {
-  const user = await UserService.getRandom(req.headers.authorization ?? '');
-  return res.status(HttpStatusCodes.OK).json(user);
+  const data = await UserService.getRandom(req.headers.authorization!);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
@@ -40,7 +40,7 @@ async function update(req: IReq<{ data: IUser }>, res: IRes) {
  */
 async function login(req: IReq<{ data: UserLogin }>, res: IRes) {
   const data = await UserService.login(req.body.data);
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
@@ -58,12 +58,14 @@ async function profile(req: IReqQuery<{ uid: string }>, res: IRes) {
   const { uid } = req.query;
   const filter = uid ? { uid } : { token: req.headers.authorization };
   const data = await UserService.getProfile(filter);
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 function sessionExpired(req: IReqQuery<{}>, res: IRes) {
-  const flag = UserService.hasSessionExpired(req.headers.authorization!);
-  return res.status(HttpStatusCodes[flag ? 'UNAUTHORIZED' : 'OK']).json(flag);
+  const data = UserService.hasSessionExpired(req.headers.authorization!);
+  return res
+    .status(HttpStatusCodes[data ? 'UNAUTHORIZED' : 'OK'])
+    .json({ data });
 }
 
 export default {

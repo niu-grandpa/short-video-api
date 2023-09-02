@@ -8,7 +8,7 @@ import { IReq, IReqQuery, IRes } from '../types/types';
  */
 async function one(req: IReqQuery<{ vid: string }>, res: IRes) {
   const data = await VideoService.getOne(req.query.vid);
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
@@ -17,7 +17,7 @@ async function one(req: IReqQuery<{ vid: string }>, res: IRes) {
 // @ts-ignore
 async function byUid(req: IReqQuery<GetManyOfVideoByUid>, res: IRes) {
   const data = await VideoService.getManyOfByUid(req.query);
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
@@ -25,7 +25,7 @@ async function byUid(req: IReqQuery<GetManyOfVideoByUid>, res: IRes) {
  */
 async function random(req: IReqQuery<{ size: string }>, res: IRes) {
   const data = await VideoService.getRandom(Number(req.query.size));
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
@@ -33,7 +33,7 @@ async function random(req: IReqQuery<{ size: string }>, res: IRes) {
  */
 async function add(req: IReq<{ data: IAddVideo }>, res: IRes) {
   const data = await VideoService.addOne(req.body.data);
-  return res.status(HttpStatusCodes.OK).json(data);
+  return res.status(HttpStatusCodes.OK).json({ data });
 }
 
 /**
