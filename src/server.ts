@@ -90,9 +90,9 @@ app.use(
 
 // ** Front-End Content ** //
 
-// Set static directory (js and css).
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
+// Set static directory
+const resourceDir = path.join(__dirname, 'resources');
+app.use(express.static(resourceDir));
 
 // **** Export default **** //
 
