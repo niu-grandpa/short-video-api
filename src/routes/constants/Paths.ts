@@ -23,7 +23,6 @@ const Paths = {
     Base: '/videos',
     One: '/one',
     ByUid: '/get-by-uid',
-    Upload: '/upload',
     Random: '/random',
     Remove: '/delete',
   },
@@ -50,6 +49,12 @@ const Paths = {
     Base: '/permissions',
     SetUser: '/set-user',
     SetVideo: '/set-video',
+  },
+
+  Upload: {
+    Base: '/upload',
+    video: '/video',
+    avatar: '/user-avatar',
   },
 };
 
