@@ -1,8 +1,8 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { CommentLevel } from '@src/models/Comments';
 import Video, {
+  AddVideo,
   GetManyOfVideoByUid,
-  IAddVideo,
   IVideo,
 } from '@src/models/Video';
 import db from '@src/mongodb';
@@ -61,15 +61,13 @@ async function getRandom(size = 1): Promise<IVideo[]> {
   return res;
 }
 
-async function addOne(data: IAddVideo): Promise<IVideo> {
+async function addOne(data: AddVideo): Promise<void> {
   try {
-    const res = Video.new(data);
-    await new db.VideoModel(res).save();
-    return res;
+    await new db.VideoModel(Video.new(data)).save();
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      'Failed to upload video'
+      'Failed to save video to database'
     );
   }
 }
