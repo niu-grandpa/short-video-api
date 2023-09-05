@@ -35,6 +35,8 @@ const Video = new mongoose.Schema({
   author: String,
   favorites: Array,
   created_at: Number,
+  gif: String,
+  poster: String,
   permissions: {
     publicity: Boolean,
     private: Boolean,
