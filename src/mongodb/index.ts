@@ -1,17 +1,19 @@
 import EnvVars from '@src/constants/EnvVars';
 
+import logger from 'jet-logger';
 import mongoose from 'mongoose';
 import Schemas from './schemas';
 
 // 连接数据库
-mongoose.connect(`${EnvVars.DB.Uri}/${EnvVars.DB.Database}`);
+const URI = `${EnvVars.DB.Uri}/${EnvVars.DB.Database}`;
+mongoose.connect(URI);
 
 const db = mongoose.connection;
 
 // 监听数据库连接状态
 db.on('error', console.error.bind(console, '连接错误:'));
 db.once('open', function () {
-  console.log('成功连接到数据库');
+  logger.info(`Mongodb server started on uri: ${URI}`);
 });
 
 // 用于操作数据库文档的模型

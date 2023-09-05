@@ -2,6 +2,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import User, { AddUser, IUser, UserLogin } from '@src/models/User';
 import db from '@src/mongodb';
 import { RouteError } from '@src/other/classes';
+import logger from 'jet-logger';
 
 async function getAll(): Promise<IUser[]> {
   try {
@@ -80,6 +81,7 @@ async function addOne(data: AddUser): Promise<string> {
     await new db.UserModel({
       ...newUser,
     }).save();
+    logger.info('A new user was created');
     return newUser.token;
   } catch (error) {
     throw new RouteError(
