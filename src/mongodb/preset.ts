@@ -4,13 +4,14 @@ import { IVideo } from '@src/models/Video';
 import genera from '@src/models/genera';
 import db from '@src/mongodb';
 import fs from 'fs-extra';
+import logger from 'jet-logger';
 import path from 'path';
 
 async function presetData() {
   try {
     await Promise.all([mockUserData(), mockVideoData() /*mockCommentData()*/]);
   } catch (error) {
-    console.log('载入预置数据失败: ', error);
+    logger.err('载入预置数据失败: ', error);
   }
 }
 
@@ -18,7 +19,7 @@ async function mockUserData() {
   const data = await db.UserModel.find({});
   if (!data.length) {
     const file = await fs.readFile(
-      path.join(__dirname, '../../static/users.json'),
+      path.join(__dirname, 'data/users.json'),
       'utf-8'
     );
     const { data } = JSON.parse(file) as { data: IUser[] };
@@ -30,7 +31,7 @@ async function mockUserData() {
       return item;
     });
     await db.UserModel.insertMany(data);
-    console.log('已预置用户数据');
+    logger.info('已预置用户数据');
   }
 }
 
@@ -38,7 +39,7 @@ async function mockVideoData() {
   const data = await db.VideoModel.find({});
   if (!data.length) {
     const file = await fs.readFile(
-      path.join(__dirname, '../../static/videos.json'),
+      path.join(__dirname, 'data/videos.json'),
       'utf-8'
     );
     const { data } = JSON.parse(file) as { data: IVideo[] };
@@ -47,7 +48,7 @@ async function mockVideoData() {
       return item;
     });
     await db.VideoModel.insertMany(data);
-    console.log('已预置视频数据');
+    logger.info('已预置视频数据');
   }
 }
 
@@ -55,7 +56,7 @@ async function mockCommentData() {
   const data = await db.CommentModel.find({});
   if (!data.length) {
     const file = await fs.readFile(
-      path.join(__dirname, '../../static/comments.json'),
+      path.join(__dirname, 'data/comments.json'),
       'utf-8'
     );
     const { data } = JSON.parse(file) as { data: IComment[] };
@@ -64,7 +65,7 @@ async function mockCommentData() {
     //   return item;
     // });
     await db.CommentModel.insertMany(data);
-    console.log('已预置评论数据');
+    logger.info('已预置评论数据');
   }
 }
 

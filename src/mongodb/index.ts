@@ -4,14 +4,20 @@ import logger from 'jet-logger';
 import mongoose from 'mongoose';
 import Schemas from './schemas';
 
+const URI =
+  EnvVars.NodeEnv !== 'development'
+    ? EnvVars.DB.Uri
+    : `${EnvVars.DB.Uri}/${EnvVars.DB.Database}`;
+
 // 连接数据库
-const URI = `${EnvVars.DB.Uri}/${EnvVars.DB.Database}`;
 mongoose.connect(URI);
 
 const db = mongoose.connection;
 
 // 监听数据库连接状态
-db.on('error', console.error.bind(console, '连接错误:'));
+db.on('error', () => {
+  logger.err('Mongodb error when connection');
+});
 db.once('open', function () {
   logger.info(`Mongodb server started on uri: ${URI}`);
 });
