@@ -122,13 +122,15 @@ async function updateOne(
   }
 }
 
-function hasSessionExpired(token: string): boolean {
-  return User.isTokenExpired(token);
+function hasSessionExpired(token: string): Promise<boolean> {
+  return new Promise(res => {
+    res(User.isTokenExpired(token));
+  });
 }
 
 async function login({ token, ...rest }: UserLogin): Promise<string> {
   if (token) {
-    if (hasSessionExpired(token)) {
+    if (await hasSessionExpired(token)) {
       throw new RouteError(
         HttpStatusCodes.UNAUTHORIZED,
         'User login has expired'

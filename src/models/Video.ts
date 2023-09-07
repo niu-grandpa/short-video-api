@@ -49,10 +49,8 @@ ffmpeg.setFfmpegPath(ffmpegPath);
  */
 function transform2Img(filename: string, dynamic?: boolean) {
   const output = path.join(__dirname, `../resources/video_posters/${filename}`);
-  const videoPath = path.join(
-    __dirname,
-    `.../resources/videos/${filename}.mp4`
-  );
+  const videoPath = path.join(__dirname, `../resources/videos/${filename}.mp4`);
+
   // 读入路径
   const Ffmpeg = ffmpeg(videoPath);
 

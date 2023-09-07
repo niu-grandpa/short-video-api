@@ -62,8 +62,8 @@ async function profile(req: IReqQuery<{ uid: string }>, res: IRes) {
   return res.status(HttpStatusCodes.OK).json({ data });
 }
 
-function sessionExpired(req: IReqQuery<{}>, res: IRes) {
-  const data = UserService.hasSessionExpired(req.headers.authorization!);
+async function sessionExpired(req: IReqQuery<{}>, res: IRes) {
+  const data = await UserService.hasSessionExpired(req.headers.authorization!);
   return res
     .status(HttpStatusCodes[data ? 'UNAUTHORIZED' : 'OK'])
     .json({ data });
