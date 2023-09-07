@@ -1,13 +1,14 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import { IUser, UserLogin } from '@src/models/User';
+import { GetAllUsers, IUser, UserLogin } from '@src/models/User';
 import UserService from '@src/services/UserService';
 import { IReq, IReqQuery, IRes } from '../types/types';
 
 /**
  * Get all users.
  */
-async function getAll(_: IReq, res: IRes) {
-  const data = await UserService.getAll();
+// @ts-ignore
+async function getAll(req: IReqQuery<GetAllUsers>, res: IRes) {
+  const data = await UserService.getAll(req.query);
   return res.status(HttpStatusCodes.OK).json({ data });
 }
 

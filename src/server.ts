@@ -30,26 +30,20 @@ const app = express();
 
 // **** AllowOrigin **** //
 
-// 允许跨域请求的url
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://192.168.137.1:3000',
-  'https://microdio.vercel.app',
-];
-
 // 配置 cors 中间件
 app.use(
   cors({
     credentials: true,
-    methods: 'PUT,POST,GET,DELETE,OPTIONS',
+    optionsSuccessStatus: 200,
     allowedHeaders: 'Content-Type,Authorization,X-Requested-With',
-    origin: function (origin, callback) {
-      if (origin && allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Not allowed by CORS: ${origin}`));
-      }
-    },
+    // 允许跨域请求的url
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:8000',
+      'http://localhost:8080',
+      'http://127.0.0.1/3000',
+      'https://microdio.vercel.app',
+    ],
   })
 );
 

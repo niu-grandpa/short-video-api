@@ -1,4 +1,5 @@
 import EnvVars from '@src/constants/EnvVars';
+import { GenericPagination } from '@src/routes/types/types';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export enum UserRoles {
@@ -33,6 +34,10 @@ export interface IUser {
     lock_posts: boolean;
     lock_favorited: boolean;
   };
+}
+
+export interface GetAllUsers extends GenericPagination {
+  word?: string;
 }
 
 export interface AddUser {

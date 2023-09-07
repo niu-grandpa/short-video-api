@@ -1,16 +1,24 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
-import User, { AddUser, IUser, UserLogin } from '@src/models/User';
+import User, { AddUser, GetAllUsers, IUser, UserLogin } from '@src/models/User';
 import db from '@src/mongodb';
 import { RouteError } from '@src/other/classes';
 import logger from 'jet-logger';
 
-async function getAll(): Promise<IUser[]> {
+async function getAll(data: GetAllUsers): Promise<IUser[]> {
+  const { word, sort, page, size } = data;
+  const filter = word
+    ? { nickname: { $regex: RegExp(word), $options: 'i' } }
+    : {};
+
   try {
-    return await db.UserModel.find();
+    return (await db.UserModel.find(filter)
+      .sort({ create_at: sort ?? 1 })
+      .skip(page * size)
+      .limit(size)) as IUser[];
   } catch (error) {
     throw new RouteError(
       HttpStatusCodes.INTERNAL_SERVER_ERROR,
-      'Failed to get users'
+      'An error occurred while get users'
     );
   }
 }
